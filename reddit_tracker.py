@@ -20,6 +20,16 @@ def collect_subs(sub_name):
         sub_list = submission.comments.list()
     return sub_list
 
+def collect_historical_subs(sub_name, query):
+    historical_subs = []
+    for submission in reddit.subreddit(sub_name).search(query):
+        if conv_time(submission.created_utc) == '2021-01-27':
+            historical_subs.append(submission.title)
+        else:
+            continue
+    print(historical_subs)
+
+
 def sum_new_accounts(start_time, sub_list):
     ''' Traverse through replies from sub
         and extract DOB of new accounts
@@ -38,7 +48,8 @@ def sum_new_accounts(start_time, sub_list):
     return count
 
 if __name__ == '__main__':
-    start_time = '2021-01-01'
-    sub_data = collect_subs('wallstreetbets')
-    count = sum_new_accounts(start_time, sub_data)
-    logging.info(count)
+  #  start_time = '2021-01-01'
+  #   sub_data = collect_subs('wallstreetbets')
+  #  count = sum_new_accounts(start_time, sub_data)
+  #  logging.info(count)
+  collect_historical_subs('wallstreetbets', 'GME')
