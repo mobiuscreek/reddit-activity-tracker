@@ -1,27 +1,11 @@
 version: '3'
 services:
   influxdb:
-    image: influxdb:latest
+    image: quay.io/influxdb/influxdb:v2.0.3
     ports:
       - 8086:8086
-    environment:
-      - INFLUX_USERNAME= ${INFLUX_USERNAME}
-      - INFLUX_PASSWORD= ${INFLUX_PASSWORD}
     volumes:
-      - influxdb_data:/influxdb
+      - influxdb_data:/root/.influxdbv2
     restart: always
-  chronograf:
-      image: chronograf:latest
-      ports:
-        - 8888:8888
-      volumes:
-        - chronograf_data:/var/lib/chronograf
-      depends_on:
-        - influxdb
-      environment:
-        - INFLUX_URL=http://influxdb:8086
-        - INFLUX_USERNAME=${INFLUX_USERNAME}
-        - INFLUX_PASSWORD=${INFLUX_PASSWORD}
 volumes:
   influxdb_data:
-  chronograf_data:
