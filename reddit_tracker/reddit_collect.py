@@ -75,5 +75,5 @@ def filter_created_utc(time_thres, comment_id):
         return {"measurement": "redditor_dob",
                 "tags": {"subreddit": str(comment.subreddit)},
                 "fields": {"created_utc_float": comment.author.created_utc, "comment_id": str(comment_id)},
-                "time": datetime.datetime.now()}
+                "time": redditor_dob}
 
