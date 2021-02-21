@@ -30,9 +30,11 @@ def collect_historical_subs(sub_name, query_str, start_time, end_time):
     ''' Return subs that match query in text
         of top submissions based on dates '''
     historical_subs = []
+    start_time = datetime.datetime.strptime(start_time, '%Y-%m-%d')
+    end_time = datetime.datetime.strptime(end_time, '%Y-%m-%d')
 
-    for submission in reddit.subreddit(sub_name).top(limit=100):
-        sub_time = conv_time(submission.created_utc)
+    for submission in reddit.subreddit(sub_name).top(limit=500):
+        sub_time = to_datetime(submission.created_utc)
         if query_str in submission.selftext and start_time <= sub_time <= end_time:
             historical_subs.append(submission.url)
         else:
