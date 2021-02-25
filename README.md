@@ -2,10 +2,9 @@
 
 This is a repository that was set up with the idea of monitoring new users' activity in light of the events in the `wallstreetbets` subreddit. The script will scrape posts within the dates provided (used as _from_ and _to_ date limits for old posts) and store only the users' information that are newer than the compared date provided (the default date is set us 2021-01-01). This process stores the `comment_id` and `created_utc` parameter of a redditor's account on influxdb.  
 
-An example of a graph from an offline run can be seen below (from influxdbv2):
+An example that highlights the higher activity of **new** users (created after 01-01-2021) on WSB leading to the end of January can be seen below (from influxdbv2):
 
-
-
+<a href=""><img src="influxdb2-2.png" align="center" height="80%" width="80%"></a>
 
 This shows the high activity of new users on the dates leading to GME, AMC
 
