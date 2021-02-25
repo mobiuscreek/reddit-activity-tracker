@@ -7,7 +7,7 @@ An example that highlights the higher activity and involvement of **new** users 
 <a href=""><img src="images/influxdb2-2.png" align="center" height="80%" width="80%"></a>
 
 
-The project consists of:
+The project uses:
    * `influxdbv2` (as the database)
    * `praw` (for the reddit API) 
 
