@@ -22,7 +22,7 @@ The project consists of:
 
 `python main.py` 
 
-The p (if not changed) will scrape January 2021 posts from `wallstreetbets` and log the dates of the
+
 
 #### Requirements
 
