@@ -2,29 +2,29 @@ import datetime
 from influxdb_client import InfluxDBClient, Point
 import praw
 
-reddit = praw.Reddit("tracker_bot")
+reddit = praw.Reddit("tracker_bot") # provided by praw.ini
 
 
 def to_datetime(timestamp):
     ''' Convert from timestamp to datetime '''
     return datetime.datetime.fromtimestamp(timestamp)
 
-def collect_data(sub_list, time_thres):
+def collect_data(comment_id, time_thres):
     ''' Collect posts from subreddits after specified time threshold '''
-    data = []
+    comment = reddit.comment(id=f'{comment_id}')
+    redditor_dob = filter_created_utc(time_thres, comment)
+    if redditor_dob is not None:
+        return {"measurement": "redditor_dob",
+                "tags": {"subreddit": str(comment.subreddit)},
+                "fields": {"created_utc_float": comment.author.created_utc, "comment_id": str(comment_id)},
+                "time": datetime.datetime.now()}
 
-    for sub_url in sub_list:
-        sub = reddit.submission(url=sub_url)
-        sub.comments.replace_more(limit=None)
-        for comment_id in sub.comments.list():
-            try:
-                filtered_data = filter_created_utc(time_thres, comment_id)
-            except Exception:
-                continue
-            if filtered_data is not None:
-                data.append(filtered_data)
+def extract_comments(sub_url):
+    sub = reddit.submission(url=sub_url)
+    sub.comments.replace_more(limit=None)
+    for comment_id in sub.comments.list():
+        return comment_id
 
-    return data
 
 def collect_historical_subs(sub_name, query_str, start_time, end_time):
     ''' Return subs that match query in text
@@ -64,18 +64,17 @@ def collect_hot_subs(sub_name, query_str):
 
     return hot_subs
 
-def filter_created_utc(time_thres, comment_id):
-    ''' Traverse through replies from sub
-        and extract DOB of new accounts
-        based on threshold time
+def filter_created_utc(time_thres, comment):
+    ''' Extract DOB of new accounts
+        based on threshold datetime
     '''
     date_time = datetime.datetime.strptime(time_thres, '%Y-%m-%d')
-    comment = reddit.comment(id=f'{comment_id}')
-    redditor_dob = to_datetime(comment.author.created_utc)
+    try:
+        redditor_dob = to_datetime(comment.author.created_utc)
+    except Exception: ## Needs better handling
+        return None
 
     if date_time <= redditor_dob:
-        return {"measurement": "redditor_dob",
-                "tags": {"subreddit": str(comment.subreddit)},
-                "fields": {"created_utc_float": comment.author.created_utc, "comment_id": str(comment_id)},
-                "time": redditor_dob}
-
+        return redditor_dob
+    else:
+        return None
