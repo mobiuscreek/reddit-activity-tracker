@@ -9,6 +9,26 @@ def to_datetime(timestamp):
     ''' Convert from timestamp to datetime '''
     return datetime.datetime.fromtimestamp(timestamp)
 
+
+def filter_created_utc(time_thres, comment):
+    ''' Extract DOB of new accounts
+        based on threshold datetime
+    '''
+    date_time = datetime.datetime.strptime(time_thres, '%Y-%m-%d')
+
+    try:
+        redditor_dob = to_datetime(comment.author.created_utc)
+    except Exception: ## Needs better handling
+        redditor_dob = None
+
+    if date_time <= redditor_dob:
+        redditor_dob = redditor_dob
+    else:
+        redditor_dob = None
+
+    return redditor_dob
+
+
 def collect_data(comment_id, time_thres):
     ''' Collect posts from subreddits after specified time threshold '''
     comment = reddit.comment(id=f'{comment_id}')
@@ -18,12 +38,6 @@ def collect_data(comment_id, time_thres):
                 "tags": {"subreddit": str(comment.subreddit)},
                 "fields": {"created_utc_float": comment.author.created_utc, "comment_id": str(comment_id)},
                 "time": datetime.datetime.now()}
-
-def extract_comments(sub_url):
-    sub = reddit.submission(url=sub_url)
-    sub.comments.replace_more(limit=None)
-    for comment_id in sub.comments.list():
-        return comment_id
 
 
 def collect_historical_subs(sub_name, query_str, start_time, end_time):
@@ -42,14 +56,6 @@ def collect_historical_subs(sub_name, query_str, start_time, end_time):
 
     return historical_subs
 
-def search(sub_name, query_str):
-    ''' Return subs that match query string '''
-    subs = []
-
-    for submission in reddit.subreddit(sub_name).search(query_str):
-        subs.append(submission)
-
-    return subs
 
 def collect_hot_subs(sub_name, query_str):
     ''' Return subs that match query in text of hot submissions '''
@@ -64,17 +70,21 @@ def collect_hot_subs(sub_name, query_str):
 
     return hot_subs
 
-def filter_created_utc(time_thres, comment):
-    ''' Extract DOB of new accounts
-        based on threshold datetime
-    '''
-    date_time = datetime.datetime.strptime(time_thres, '%Y-%m-%d')
-    try:
-        redditor_dob = to_datetime(comment.author.created_utc)
-    except Exception: ## Needs better handling
-        return None
 
-    if date_time <= redditor_dob:
-        return redditor_dob
-    else:
-        return None
+def search(sub_name, query_str):
+    ''' Return subs that match query string '''
+    subs = []
+
+    for submission in reddit.subreddit(sub_name).search(query_str):
+        subs.append(submission)
+
+    return subs
+
+
+def extract_comments(sub_url):
+    ''' Extract comments form subreddits '''
+    sub = reddit.submission(url=sub_url)
+    sub.comments.replace_more(limit=None)
+
+    for comment_id in sub.comments.list():
+        return comment_id
