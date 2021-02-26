@@ -1,6 +1,6 @@
 # Reddit activity tracker
 
-This is a repository that was set up with the idea of monitoring new users' activity in light of the events in the `wallstreetbets` subreddit. The script will scrape posts within the dates provided (used as _from_ and _to_ date limits for old posts) and store only the users' information that are newer than the compared date provided (the default date is set to 2021-01-01). This process stores the `comment_id` and `created_utc` properties of a redditor's account in influxdb.  
+This project was set up with the idea of monitoring the posting activity of new user (or _suspicious bots_) accounts in light of the GME events, on the `wallstreetbets` subreddit. The script will scrape posts within the dates provided (used as _from_ and _to_ date limits for historical posts) and store only the users' information that are newer than the compared date provided (the default date is set to 2021-01-01). The process stores the `comment_id` and `created_utc` properties of a redditor's account in influxdb.   
 
 An example that highlights the higher activity and involvement of **new** users (created after 01-01-2021) on WSB subreddit leading to the end of January can be seen in the following influxdb dashboard:
 
