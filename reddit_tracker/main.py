@@ -3,11 +3,11 @@ import praw
 from db import  check_exists, db_connect, db_write
 from reddit_collect import extract_comments, collect_hot_subs, collect_historical_subs, collect_data
 
-reddit = praw.Reddit("tracker_bot")
 
 def reddit_monitor(bucket, org, subreddit,
                    keyword, time_thres,
                    date_from, date_to):
+    client=db_connect()
 
     subs = collect_historical_subs(subreddit, keyword, date_from, date_to)
     for sub_url in subs:
@@ -19,8 +19,8 @@ def reddit_monitor(bucket, org, subreddit,
             if not exists:
                 db_write(client, bucket, org, sub_attrs)
 
+
 if __name__ == '__main__':
-    client = db_connect()
     parser = argparse.ArgumentParser()
     parser.add_argument(--bucket, help="bucket's name (influxdb)")
     parser.add_argument(--org, help="organization's name (influxdb)")
