@@ -1,5 +1,4 @@
 import datetime
-from influxdb_client import InfluxDBClient, Point
 import praw
 
 reddit = praw.Reddit("tracker_bot") # provided by praw.ini
@@ -40,9 +39,9 @@ def collect_data(comment_id, time_thres):
                 "time": datetime.datetime.now()}
 
 
-def collect_historical_subs(sub_name, query_str, start_time, end_time):
+def collect_historical_subs(sub_name, query_str, date_from, date_to):
     ''' Return subs that match query in text
-        of top submissions based on dates '''
+        of top submissions based on date_from to date_to '''
     historical_subs = []
     start_time = datetime.datetime.strptime(start_time, '%Y-%m-%d')
     end_time = datetime.datetime.strptime(end_time, '%Y-%m-%d')
